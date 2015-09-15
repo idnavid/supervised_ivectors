@@ -1,0 +1,5 @@
+This project is build the recently popularized idea of training ivectors using ASR posteriors. 
+
+Original paper:
+Yun Lei; Scheffer, N.; Ferrer, L.; McLaren, M., "A novel scheme for speaker recognition using a phonetically-aware deep neural network," in Acoustics, Speech and Signal Processing (ICASSP), 2014 IEEE International Conference on , vol., no., pp.1695-1699, 4-9 May 2014
+
