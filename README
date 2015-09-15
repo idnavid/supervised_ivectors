@@ -3,3 +3,8 @@ This project is build the recently popularized idea of training ivectors using A
 Original paper:
 Yun Lei; Scheffer, N.; Ferrer, L.; McLaren, M., "A novel scheme for speaker recognition using a phonetically-aware deep neural network," in Acoustics, Speech and Signal Processing (ICASSP), 2014 IEEE International Conference on , vol., no., pp.1695-1699, 4-9 May 2014
 
+
+The main project is on the CRSS cluster. But the original repo was built on my local machine. 
+
+Navid Shokouhi 
+September 2015
