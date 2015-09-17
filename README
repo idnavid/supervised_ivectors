@@ -6,5 +6,9 @@ Yun Lei; Scheffer, N.; Ferrer, L.; McLaren, M., "A novel scheme for speaker reco
 
 The main project is on the CRSS cluster. But the original repo was built on my local machine. 
 
+Required packages:
+MSR_identity_toolkit --> For MATLAB experiments. 
+
+
 Navid Shokouhi 
 September 2015
