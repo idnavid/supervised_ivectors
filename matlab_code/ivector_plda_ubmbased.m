@@ -18,10 +18,10 @@ dataList = 'lists/ubm.lst.subset';
 nmix        = 1024;
 final_niter = 10;
 ds_factor   = 1;
-% ubm = gmm_em(dataList, nmix, final_niter, ds_factor, nworkers);
-% save('models/ubm','ubm');
-ubmMat = load('models/ubm');
-ubm = ubmMat.ubm;
+ubm = gmm_em(dataList, nmix, final_niter, ds_factor, nworkers);
+save('models/ubm','ubm');
+% ubmMat = load('models/ubm');
+% ubm = ubmMat.ubm;
 %% Learning the total variability subspace from background data
 
 tv_dim = 400; 
@@ -32,13 +32,13 @@ C = textscan(fid, '%s');
 fclose(fid);
 feaFiles = C{1};
 stats = cell(length(feaFiles), 1);
-% parfor file = 1 : length(feaFiles),
-%     [N, F] = compute_bw_stats(feaFiles{file}, ubm);
-%     stats{file} = [N; F];
-% end
-% T = train_tv_space(stats, ubm, tv_dim, niter, nworkers);
-tvMat = load('models/TV');
-T = tvMat.T;
+parfor file = 1 : length(feaFiles),
+    [N, F] = compute_bw_stats(feaFiles{file}, ubm);
+    stats{file} = [N; F];
+end
+T = train_tv_space(stats, ubm, tv_dim, niter, nworkers);
+% tvMat = load('models/TV');
+% T = tvMat.T;
 %% Training the Gaussian PLDA model with development i-vectors
 
 lda_dim = 200;
