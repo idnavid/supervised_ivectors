@@ -2,29 +2,20 @@
 import htkmfc
 import pickle
 import numpy as np
+from sklearn import mixture
 
 class Gmm(object):
     def __init__(self):
         self.number_of_mixtures = 1
         self.feature_dimension  = None
-        self.means              = None
-        self.variances          = None
-        self.weights            = None
         ####
         self.training_data      = None
-        self.global_mean        = None
-        self.global_variance    = None
+        ####
+        self.scikitGmm          = mixture.GMM(self.number_of_mixtures)
         
-    
-    def global_statistics(self):
-        """Find initial values for gmm training process."""
-        self.global_mean = np.mean(self.training_data,axis = 0).reshape(self.feature_dimension,1)
-        self.global_variance = np.cov(self.training_data.T)
-    
+        
     def initialize_gmm(self):
-        self.weights            = 1
-        self.means              = self.global_mean
-        self.variances          = self.global_variance
+        self.scikitGmm.fit(self.training_data)        
     
     def expectation(self,file_list, mixture_number):
         #The expectation step runs in parallel on SGE. For this we need to create
