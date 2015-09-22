@@ -23,12 +23,11 @@ def generate_file_statistics(filename, mixture_number):
     prob_data_given_model = gmm.scikitGmm.predict_proba(data)
     
     # Calculate 0th, 1st, and 2nd order statistics
-    zeroth_order_stats   = sum(prob_data_given_model)
-    first_order_stats    = sum(np.multiply(data,prob_data_given_model))
-    second_order_stats   = sum(np.multiply(np.power(data,2),prob_data_given_model))
-    
+    zeroth_order_stats   = np.sum(prob_data_given_model,axis = 0)
+    first_order_stats    = np.dot(data.T,prob_data_given_model)
+    second_order_stats   = np.dot(np.power(data.T,2),prob_data_given_model)
+     
     print zeroth_order_stats.shape, first_order_stats.shape, second_order_stats.shape
-    
     file_stats = [zeroth_order_stats, first_order_stats, second_order_stats]
     
     # Store statistics:

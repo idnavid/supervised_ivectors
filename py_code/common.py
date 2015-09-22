@@ -32,6 +32,9 @@ class Gmm(object):
     
     def maximization(self,file_list):
         fin = open(file_list)
+        N = np.zeros((self.number_of_mixtures,1))
+        F = np.zeros((self.feature_dimension,1))
+        S = np.zeros((self.feature_dimension,1))
         for i in fin:
             filename = i.strip()
             basename = filename.split('/')[-1]
@@ -40,25 +43,17 @@ class Gmm(object):
             n = filestats[0]
             f = filestats[1]
             s = filestats[2]
-            try:
-                print n.shape, f.shape, s.shape
-                N = N + n
-                F = F + f
-                S = S + s
-            except:
-                print n.shape, f.shape, s.shape
-                N = n
-                F = f
-                S = s
-        print N.shape, F.shape, S.shape
+            N += n
+            F += f
+            S += s
         fin.close()
         weights   = N/float(sum(N))
         means     = F/N
-        variances = S/N - np.power(means,2)
+        variances = (S/N) - np.power(means,2)
         
-        self.scikitGmm.set_means   = means
-        self.scikitGmm.set_covars  = variances
-        self.scikitGmm.set_weights = weights
+        self.scikitGmm.means_   = means
+        self.scikitGmm.covars_  = variances
+        self.scikitGmm.weights_ = weights
         return None
     
     
