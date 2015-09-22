@@ -9,7 +9,9 @@ ubm.initialize_gmm()
 ubm.save_gmm()
 
 ubm.expectation('lists/ubm.lst.subset', str(ubm.number_of_mixtures))
-        
+tmp_mean = ubm.scikitGmm.means_
+ubm.maximization('lists/ubm.lst.subset')
+print tmp_mean - ubm.scikitGmm.means_
         
         
 

@@ -24,13 +24,41 @@ class Gmm(object):
         fin = open(file_list)
         for i in fin:
             filename = i.strip()
-            bash_command = 'python generate_file_statistics.py %s %s\n'
+            bash_command = 'python /scratch/nxs113020/supervised_ivectors/py_code/generate_file_statistics.py %s %s\n'
             expectation_jobs.write(bash_command%(filename, mixture_number))
         fin.close()
         expectation_jobs.close()
+        return None
     
-    
-    def maximization(self,N,F,S):
+    def maximization(self,file_list):
+        fin = open(file_list)
+        for i in fin:
+            filename = i.strip()
+            basename = filename.split('/')[-1]
+            statname = '/erasable/nxs113020/stats/'+basename+'.stats'
+            filestats = pickle.load(open(statname, 'rb' ))
+            n = filestats[0]
+            f = filestats[1]
+            s = filestats[2]
+            try:
+                print n.shape, f.shape, s.shape
+                N = N + n
+                F = F + f
+                S = S + s
+            except:
+                print n.shape, f.shape, s.shape
+                N = n
+                F = f
+                S = s
+        print N.shape, F.shape, S.shape
+        fin.close()
+        weights   = N/float(sum(N))
+        means     = F/N
+        variances = S/N - np.power(means,2)
+        
+        self.scikitGmm.set_means   = means
+        self.scikitGmm.set_covars  = variances
+        self.scikitGmm.set_weights = weights
         return None
     
     
