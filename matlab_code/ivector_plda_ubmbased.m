@@ -14,19 +14,17 @@ if ~isopen, matlabpool(nworkers); end
 
 %% Train UBM
 
-dataList = 'lists/ubm.lst.subset';
+dataList = 'lists/ubm.lst';
 nmix        = 1024;
 final_niter = 10;
 ds_factor   = 1;
-ubm = gmm_em(dataList, nmix, final_niter, ds_factor, nworkers);
-save('models/ubm','ubm');
-% ubmMat = load('models/ubm');
-% ubm = ubmMat.ubm;
+%ubm = gmm_em(dataList, nmix, final_niter, ds_factor, nworkers);
+ubm = load_htk_gmm('models/ubm.htk');
 %% Learning the total variability subspace from background data
 
 tv_dim = 400; 
 niter  = 5;
-dataList = 'lists/ubm.lst.subset';
+dataList = 'lists/ubm.lst';
 fid = fopen(dataList, 'rt');
 C = textscan(fid, '%s');
 fclose(fid);

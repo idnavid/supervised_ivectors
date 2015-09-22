@@ -1,1 +1,5 @@
 This directory contains models for the speaker id experiments.
+
+*.htk files are in text format and are stored as htk models. 
+
+
