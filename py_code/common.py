@@ -96,5 +96,35 @@ class Gmm(object):
         #h5file.close()
     
     
+def train_tv_matrix(file_list,ubm,tv_dimension):
     
-
+    """
+       Estimate the tv-matrix using file statistics.
+       The current version uses UBM covariances for 
+       second order statistics S. I'll need to figure
+       out how to replace S, without using the UBM. """
+    
+    # 1. Initialize parameters
+    S = ubm.scikitGmm.covars_.reshape(ubm.feature_dimension*ubm.number_of_mixtures,1)
+    
+    fin = open(file_list)
+    N_list = []
+    F_list = []
+    for i in fin:
+        filename = i.strip()
+        basename = filename.split('/')[-1]
+        statname = '/erasable/nxs113020/stats/'+basename+'.stats'
+        filestats = pickle.load(open(statname, 'rb' ))
+        n = filestats[0]
+        f = filestats[1]
+        N_list.append(n)
+        F_list.append(f)
+    n_files = len(N)
+    N = np.array(N_list).reshape(n_files,ubm.number_of_mixtures)
+    F = np.array(F_list).reshape(n_files,ubm.number_of_mixtures*ubm.feature_dimension)
+    
+    n_iterations = 5 
+    for i in range(n_iterations):
+        L, R = tv_expectation(T, N, F, S)
+        T = tv_maximization(L, R)
+    
