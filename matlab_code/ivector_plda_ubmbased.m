@@ -14,17 +14,17 @@ if ~isopen, matlabpool(nworkers); end
 
 %% Train UBM
 
-dataList = 'lists/ubm.lst';
-nmix        = 1024;
+dataList = 'lists/ubm_voiced.lst';
+nmix        = 2048;
 final_niter = 10;
 ds_factor   = 1;
 %ubm = gmm_em(dataList, nmix, final_niter, ds_factor, nworkers);
-ubm = load_htk_gmm('models/ubm.htk');
+ubm = load_htk_gmm('models/ubm_voiced.htk');
 %% Learning the total variability subspace from background data
 
 tv_dim = 400; 
 niter  = 5;
-dataList = 'lists/ubm.lst';
+dataList = 'lists/ubm_voiced.lst';
 fid = fopen(dataList, 'rt');
 C = textscan(fid, '%s');
 fclose(fid);
@@ -35,14 +35,15 @@ parfor file = 1 : length(feaFiles),
     stats{file} = [N; F];
 end
 %T = train_tv_space(stats, ubm, tv_dim, niter, nworkers);
-%tvMat = load('models/TV');
-%T = tvMat.T;
+tvMat = load('models/TV');
+T = tvMat.T;
+clear tvMat;
 %% Training the Gaussian PLDA model with development i-vectors
 
 lda_dim = 200;
 nphi    = 200;
 niter   = 10;
-dataList = 'lists/plda.lst';
+dataList = 'lists/plda_voiced.lst';
 fid = fopen(dataList, 'rt');
 C = textscan(fid, '%s %s');
 fclose(fid);
@@ -56,12 +57,12 @@ spk_labs = C{2};
 V = lda(dev_ivs, spk_labs);
 dev_ivs = V(:, 1 : lda_dim)' * dev_ivs;
 %------------------------------------
-plda = gplda_em(dev_ivs, spk_labs, nphi, niter);
-%pldaMat = load('models/plda');
-%plda = pldaMat.plda;
-
+%plda = gplda_em(dev_ivs, spk_labs, nphi, niter);
+pldaMat = load('models/plda');
+plda = pldaMat.plda;
+clear pldaMat;
 %% Scoring the verification trials
-fea_dir = '/home/nxs113020/features/';
+fea_dir = '/home/nxs113020/voiced_features/';
 fea_ext = '.htk';
 fid = fopen('lists/trn_spk2utt', 'rt');
 C = textscan(fid, '%s %s');
@@ -97,7 +98,7 @@ fclose(fid);
 [train_files] = unique(C{1}, 'stable'); % check if the order is the same as above!
 trial_model_ids = train_files;
 for i = 1:length(train_files)
-    train_file = train_ids{i};
+    train_file = train_files{i};
     
     search_output = strfind(model_files, train_file); % a cell of find occurances of train_file in model_files
     index_in_models = find(not(cellfun('isempty', search_output))); % indexes that strfind located.
@@ -139,8 +140,14 @@ scores1 = scores1(linearInd); % select the valid trials
 scores2 = score_gplda_trials(plda, model_ivs2, test_ivs);
 scores2 = scores2(linearInd); % select the valid trials
 
+% Compute coside distance scores
+scores3 = model_ivs2'*test_ivs;
+scores3 = scores3(linearInd);
+
 %% Step5: Computing the EER and plotting the DET curve
 labels = C{3};
 eer1 = compute_eer(scores1, labels, true); % IV averaging
 hold on
 eer2 = compute_eer(scores2, labels, true); % stats averaging
+hold on 
+eer3 = compute_eer(scores3, labels, true); % CDS
