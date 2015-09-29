@@ -95,6 +95,18 @@ class Gmm(object):
         #h5file.createArray(root,"test",self.training_data)
         #h5file.close()
     
+
+
+
+def tv_expectation(T, N, F, S, ivectors):
+    n_files = F.shape[0]
+    supervector_dimension = F.shape[1]
+    
+    C = np.dot(F,ivectors.T)
+    
+        
+    
+
     
 def train_tv_matrix(file_list,ubm,tv_dimension):
     
