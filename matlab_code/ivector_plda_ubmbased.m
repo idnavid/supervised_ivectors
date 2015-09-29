@@ -54,8 +54,10 @@ parfor file = 1 : length(feaFiles),
 end
 % reduce the dimensionality with LDA
 spk_labs = C{2};
+
 V = lda(dev_ivs, spk_labs);
 dev_ivs = V(:, 1 : lda_dim)' * dev_ivs;
+
 %------------------------------------
 %plda = gplda_em(dev_ivs, spk_labs, nphi, niter);
 pldaMat = load('models/plda');
@@ -128,10 +130,17 @@ parfor tst = 1 : length(test_files),
     [N, F] = compute_bw_stats(test_files{tst}, ubm);
     test_ivs(:, tst) = extract_ivector([N; F], ubm, T);
 end
+
 % reduce the dimensionality with LDA
 model_ivs1 = V(:, 1 : lda_dim)' * model_ivs1;
 model_ivs2 = V(:, 1 : lda_dim)' * model_ivs2;
 test_ivs = V(:, 1 : lda_dim)' * test_ivs;
+
+% Save ivectors:
+dev_ids = spk_labs;
+test_ids = test_files;
+save('models/matlab_ivectors','model_ivs1','model_ids','test_ivs', 'test_ids','dev_ivs','dev_ids')
+
 %------------------------------------
 scores1 = score_gplda_trials(plda, model_ivs1, test_ivs);
 linearInd =sub2ind([nspks, length(test_files)], Kmodel, Ktest);
@@ -144,10 +153,16 @@ scores2 = scores2(linearInd); % select the valid trials
 scores3 = model_ivs2'*test_ivs;
 scores3 = scores3(linearInd);
 
+% UEF simplified PLDA implementation
+scores4 = UEF_plda_implementation(dev_ivs, spk_labs,model_ivs1,test_ivs);
+scores4 = scores4(linearInd);
+
 %% Step5: Computing the EER and plotting the DET curve
 labels = C{3};
-eer1 = compute_eer(scores1, labels, true); % IV averaging
+eer1 = compute_eer(scores1, labels, true,'b'); % IV averaging
 hold on
-eer2 = compute_eer(scores2, labels, true); % stats averaging
+eer2 = compute_eer(scores2, labels, true,'r'); % stats averaging
 hold on 
-eer3 = compute_eer(scores3, labels, true); % CDS
+eer3 = compute_eer(scores3, labels, true,'k'); % CDS
+hold on 
+eer4 = compute_eer(scores4, labels, true,'g'); % UEF two-cov PLDA
