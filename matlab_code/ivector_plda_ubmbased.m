@@ -42,7 +42,7 @@ clear tvMat;
 
 lda_dim = 200;
 nphi    = 200;
-niter   = 10;
+niter   = 100;
 dataList = 'lists/plda_voiced.lst';
 fid = fopen(dataList, 'rt');
 C = textscan(fid, '%s %s');
@@ -59,10 +59,10 @@ V = lda(dev_ivs, spk_labs);
 dev_ivs = V(:, 1 : lda_dim)' * dev_ivs;
 
 %------------------------------------
-%plda = gplda_em(dev_ivs, spk_labs, nphi, niter);
-pldaMat = load('models/plda');
-plda = pldaMat.plda;
-clear pldaMat;
+plda = gplda_em(dev_ivs, spk_labs, nphi, niter);
+% pldaMat = load('models/plda');
+% plda = pldaMat.plda;
+% clear pldaMat;
 %% Scoring the verification trials
 fea_dir = '/home/nxs113020/voiced_features/';
 fea_ext = '.htk';
@@ -139,7 +139,8 @@ test_ivs = V(:, 1 : lda_dim)' * test_ivs;
 % Save ivectors:
 dev_ids = spk_labs;
 test_ids = test_files;
-save('models/matlab_ivectors','model_ivs1','model_ids','test_ivs', 'test_ids','dev_ivs','dev_ids')
+model_ivs = model_ivs1;
+save('models/matlab_ivectors','model_ivs','model_ids','test_ivs', 'test_ids','dev_ivs','dev_ids')
 
 %------------------------------------
 scores1 = score_gplda_trials(plda, model_ivs1, test_ivs);
@@ -164,5 +165,5 @@ hold on
 eer2 = compute_eer(scores2, labels, true,'r'); % stats averaging
 hold on 
 eer3 = compute_eer(scores3, labels, true,'k'); % CDS
-hold on 
+hold on
 eer4 = compute_eer(scores4, labels, true,'g'); % UEF two-cov PLDA

@@ -3,12 +3,12 @@ addpath(genpath('/home/nxs113020/cch_plda/PLDA_package/src')); % Add 'src' folde
 
 params.Vdim = 200; % Dimensionality of speaker latent variable
 params.Udim = 0; % Dimensionality of speaker latent variable
-params.PLDA_type = 'two-cov'; % 'std' for standard PLDA
+params.PLDA_type = 'simp'; % 'std' for standard PLDA
                            % 'simp' for simplified PLDA and
                            % 'two-cov' for two-covariance model
 params.doMDstep = 1; % Indicator whether to do minimum-divergence step
 
-numIter = 10;   % Number of training iterations
+numIter = 50;   % Number of training iterations
 LDA_dim = 0; % Dimensionality for LDA. If it is 0 then do not apply LDA.
                % It should be less than the number of individuals in the
                % training set.
@@ -59,8 +59,8 @@ if strcmp(params.PLDA_type, 'two-cov')
     [model, stats] = two_cov_initialize(train_data', matrixID);
     for i=1:numIter
         model = two_cov_em(matrixID, model, stats);
-    end 
-	scores = two_cov_verification(model, enrol_data_avr, test_data); 
+    end
+    scores = two_cov_verification(model, enrol_data_avr, test_data);
 else
     [train_data, model, stats] = em_initialize(train_data, matrixID, params);
     for i=1:numIter
