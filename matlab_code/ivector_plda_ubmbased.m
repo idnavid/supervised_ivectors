@@ -54,6 +54,7 @@ parfor file = 1 : length(feaFiles),
 end
 % reduce the dimensionality with LDA
 spk_labs = C{2};
+dev_feaFiles = feaFiles;
 
 V = lda(dev_ivs, spk_labs);
 dev_ivs = V(:, 1 : lda_dim)' * dev_ivs;
@@ -137,7 +138,14 @@ model_ivs2 = V(:, 1 : lda_dim)' * model_ivs2;
 test_ivs = V(:, 1 : lda_dim)' * test_ivs;
 
 % Save ivectors:
-dev_ids = spk_labs;
+dev_ids = cell(size(dev_feaFiles));
+for i = 1:length(dev_ids)
+    feaFile_fields = regexp(dev_feaFiles{i},'/','split');
+    file_name = feaFile_fields{end};
+    base_name = file_name(1:end-4);
+    dev_ids(i,1) = {base_name};
+end
+
 test_ids = test_files;
 model_ivs = model_ivs1;
 save('models/matlab_ivectors','model_ivs','model_ids','test_ivs', 'test_ids','dev_ivs','dev_ids')
