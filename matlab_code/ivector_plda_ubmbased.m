@@ -151,7 +151,7 @@ model_ivs = model_ivs1;
 save('models/matlab_ivectors','model_ivs','model_ids','test_ivs', 'test_ids','dev_ivs','dev_ids')
 
 %------------------------------------
-scores1 = score_gplda_trials(plda, model_ivs1, test_ivs);
+scores1 = score_gplda_trials(plda1, model_ivs1, test_ivs);
 linearInd =sub2ind([nspks, length(test_files)], Kmodel, Ktest);
 scores1 = scores1(linearInd); % select the valid trials
 

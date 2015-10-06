@@ -24,5 +24,5 @@ for set = {'dev','model','test'}
         HEADER_MAT{i,5} = [i];
     end
 [status] = arkwrite(['models/',set{1},'.ark'],HEADER_MAT,FEATURE_MAT);
-    
+
 end
