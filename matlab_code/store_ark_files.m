@@ -27,7 +27,6 @@ for set = {'dev','model','test'}
         end
     end
 
-    end
     
     for i = 1:n_ivectors 
         HEADER_MAT{i,2} = [1];
