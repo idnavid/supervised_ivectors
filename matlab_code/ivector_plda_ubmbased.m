@@ -71,6 +71,7 @@ fid = fopen('lists/trn_spk2utt', 'rt');
 C = textscan(fid, '%s %s');
 fclose(fid);
 model_ids = unique(C{1}, 'stable');
+model_ids_for_kaldi = C{2};
 model_files = C{2};
 nspks = length(model_ids);
 model_ivs1 = zeros(tv_dim, nspks);
@@ -149,6 +150,8 @@ end
 test_ids = test_files;
 model_ivs = model_ivs1;
 save('models/matlab_ivectors','model_ivs','model_ids','test_ivs', 'test_ids','dev_ivs','dev_ids')
+model_ids = model_ids_for_kaldi;
+save('models/matlab_ivectors_for_kaldi','model_ivs','model_ids','test_ivs', 'test_ids','dev_ivs','dev_ids')
 
 %------------------------------------
 scores1 = score_gplda_trials(plda1, model_ivs1, test_ivs);

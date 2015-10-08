@@ -15,8 +15,20 @@ for set = {'dev','model','test'}
     [n_ivectors,ivector_dimension] = size(FEATURE_MAT);
     
     HEADER_MAT = cell(n_ivectors,5);
-    n_ivectors
+    disp(n_ivectors)
     HEADER_MAT(:,1) = labels(1:n_ivectors);
+    
+    if strcmp(set{1},'test')
+        for i = 1:n_ivectors
+            path_cell = regexp(HEADER_MAT{i,1},'/','split');
+            filename_cell = regexp(path_cell(end),'\.','split');
+            basename = filename_cell{1}(1);
+            HEADER_MAT(i,1) = basename;
+        end
+    end
+
+    end
+    
     for i = 1:n_ivectors 
         HEADER_MAT{i,2} = [1];
         HEADER_MAT{i,3} = [ivector_dimension];
