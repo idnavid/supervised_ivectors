@@ -42,7 +42,7 @@ clear tvMat;
 
 lda_dim = 200;
 nphi    = 200;
-niter   = 100;
+niter   = 20;
 dataList = 'lists/plda_voiced.lst';
 fid = fopen(dataList, 'rt');
 C = textscan(fid, '%s %s');
